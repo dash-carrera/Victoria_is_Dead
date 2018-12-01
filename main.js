@@ -60,7 +60,7 @@ var cy = cytoscape({
 
 
 
-node_table = {'a': ['c'], 'b': ['d'], 'd': ['s'], 'c':['v','f']};
+node_table = {'a': 'c', 'b': 'd', 'd': 's', 'c':'v'};
 
 function makeNextNode(evt) {
 	//Given node clicked, add next node to graph, along with other stuff var node = evt.target;
@@ -73,9 +73,12 @@ function makeNextNode(evt) {
 		return;
 	}
 
+	next_node_position = {x: node.position()['x']+Math.random()*500-100, y: node.position()['y']+300};
+
 	cy.add({
 	group: "nodes",
-	data: {id: next_node_id}
+	data: {id: next_node_id},
+	position: next_node_position
 	});
 	cy.add({
 	group: "edges",
