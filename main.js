@@ -6,10 +6,10 @@ var cy = cytoscape({
   elements: [ //list of graph elements to start with
 
   	{ // node a
-  	      data: { id: 'a' }
+  	      data: { id: 'a', text:'Text for first node' }
   	    },
   	    { // node b
-  	      data: { id: 'b' }
+  	      data: { id: 'b', text: 'Text for second node' }
   	    },
   	    { // edge ab
   	      data: { id: 'ab', source: 'a', target: 'b' }
@@ -18,11 +18,17 @@ var cy = cytoscape({
   ],
 
   style: [ // the stylesheet for the graph
+
     {
       selector: 'node',
       style: {
-        'background-color': '#666',
-        'label': 'data(id)'
+        'content': 'data(text)',
+        'text-valign': 'center',
+        'text-halign': 'center',
+        'width': 100,
+        'height': 100,
+        'background-color': 'black',
+        'color': 'white'
       }
     },
 
@@ -32,7 +38,7 @@ var cy = cytoscape({
         'width': 3,
         'line-color': '#ccc',
         'target-arrow-color': '#ccc',
-        'target-arrow-shape': 'triangle'
+        'target-arrow-shape': 'triangle',
       }
     }
   ],
@@ -42,7 +48,7 @@ var cy = cytoscape({
     animationDuration: 500,
     spacingFactor: 2.00,
     avoidOverlap: true,
-    padding: 10
+    padding: 50
   },
 
   wheelSensitivity: .5
@@ -52,11 +58,18 @@ var cy = cytoscape({
 
 //TO DO:
 
-//1. Generate positions for each added node, so tidy, no overlap
 //2. Make nodes text instead of circles
 //3. Use "compound nodes" to group nodes together, make multiple nodes in one node
 //4. OPTIONAL: Add linkouts to other parts of project
 //5. OPTIONAL: Add support for connecting to already existing node. For now, tree only
+//6. OPTIONAL: Manually put in the positions for each node, or put all in at beginning, switch
+		// To hide / reveal
+
+//Of possible interest:
+	//HTML Labels: https://github.com/kaluginserg/cytoscape-node-html-label
+	//Birdseye view navigator: https://github.com/cytoscape/cytoscape.js-navigator
+	//Expand collapse: https://github.com/iVis-at-Bilkent/cytoscape.js-expand-collapse
+	//Fancy canvas background: https://github.com/classcraft/cytoscape.js-canvas
 
 
 
