@@ -6,15 +6,8 @@ var cy = cytoscape({
   elements: [ //list of graph elements to start with
 
   	{ // node a
-  	      data: { id: 'a', text:'Text for first node' }
-  	    },
-  	    { // node b
-  	      data: { id: 'b', text: 'Text for second node' }
-  	    },
-  	    { // edge ab
-  	      data: { id: 'ab', source: 'a', target: 'b' }
-  	   	}
-
+  	      data: { id: 'a', text:'Begin' }
+  	    }
   ],
 
   style: [ // the stylesheet for the graph
@@ -28,7 +21,7 @@ var cy = cytoscape({
         'width': 100,
         'height': 100,
         'background-color': 'black',
-        'color': 'white'
+        'color': 'green'
       }
     },
 
@@ -58,8 +51,7 @@ var cy = cytoscape({
 
 //TO DO:
 
-//2. Make nodes text instead of circles
-//3. Use "compound nodes" to group nodes together, make multiple nodes in one node
+//3. Fix node opacity
 //4. OPTIONAL: Add linkouts to other parts of project
 //5. OPTIONAL: Add support for connecting to already existing node. For now, tree only
 //6. OPTIONAL: Manually put in the positions for each node, or put all in at beginning, switch
@@ -73,18 +65,40 @@ var cy = cytoscape({
 
 
 
-node_table = {'a': 'c', 'b': 'd', 'd': 's', 'c':'v'};
+node_table = {
+	'a': {parent: 'c',
+		  children:[
+			  {
+			  	id: 'c1',
+			  	text: 'Victoria Park'
+			  },
+			  {
+			  	id: 'c2',
+			  	text: 'is dead.'
+			  }]}, 
+	'b': {parent:'d',
+		  children: []}, 
+	'd': {parent: 's',
+		  children: []}, 
+	'c':{parent: 'v',
+		 children: []}
+	};
 
 function makeNextNode(evt) {
 	//Given node clicked, add next node to graph, along with other stuff var node = evt.target;
 
 	var node = evt.target;
-	var next_node_id = node_table[node.id()];
+	var next_node_json = node_table[node.id()];
 
 	//If node not found in dictionary, just don't do anything
-	if (next_node_id == undefined) {
+	if (next_node_json == undefined) {
 		return;
 	}
+
+	var next_node_id = next_node_json['parent'];
+
+	
+	//Add parent node
 
 	next_node_position = {x: node.position()['x']+Math.random()*500-100, y: node.position()['y']+300};
 
@@ -98,14 +112,32 @@ function makeNextNode(evt) {
 	data: {id: node.id()+next_node_id, source: node.id(), target:next_node_id}
 	});
 
-	next_node = cy.$('#'+next_node_id);
-	next_node.on('tap', makeNextNode);
-	cy.animate({center: {
-		eles: next_node}
+	//Add child nodes
+
+	for (i=0; i < next_node_json.children.length; i++){
+		child_json = next_node_json.children[i];
+		console.log(child_json);
+		child_x_position = next_node_position.x-500*next_node_json.children.length+i*250;
+		cy.add({
+			group: 'nodes',
+			data: {id: child_json.id, parent: next_node_json['parent'], text:child_json.text},
+			position: {x: child_x_position, y: next_node_position.y}
+		});
+
+		child = cy.$('#'+child_json.id);
+		child.on('tap', makeNextNode);
+
+	};	
+
+
+	//Center on parent node
+	cy.animate({
+		center: {eles: cy.$('#'+next_node_id)},
+		fit: {eles: cy.$('#'+next_node_id)}
 	});
 };
 
 
-
+//Initialize all nodes for clicking
 cy.nodes().on('tap', makeNextNode);
 
