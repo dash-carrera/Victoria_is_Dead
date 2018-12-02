@@ -6,7 +6,7 @@ var cy = cytoscape({
   elements: [ //list of graph elements to start with
 
   	{ // node a
-  	      data: { id: 'a', text:'Begin' }
+  	      data: { id: 'a', text:'Begin', width:'label' }
   	    }
   ],
 
@@ -18,9 +18,10 @@ var cy = cytoscape({
         'content': 'data(text)',
         'text-valign': 'center',
         'text-halign': 'center',
-        'width': 100,
+        'width': 'label',
         'height': 100,
         'background-opacity': 0, 
+        'background-color': 'white',
         'color': 'red',
         'overlay-opacity':0 
       }
@@ -33,6 +34,7 @@ var cy = cytoscape({
         'line-color': '#ccc',
         'target-arrow-color': '#ccc',
         'target-arrow-shape': 'triangle',
+        'curve-style': 'bezier',
       }
     }
   ],
@@ -45,7 +47,7 @@ var cy = cytoscape({
     padding: 50
   },
 
-  wheelSensitivity: .5
+  wheelSensitivity: .5,
 
 
 });
@@ -76,12 +78,31 @@ node_table = {
 			  	id: 'c2',
 			  	text: 'is dead.'
 			  }]}, 
-	'b': {parent:'d',
-		  children: []}, 
-	'd': {parent: 's',
-		  children: []}, 
-	'c':{parent: 'v',
-		 children: []}
+	'c1':  {parent: 'b',
+		  children:[
+			  {
+			  	id: 'b1',
+			  	text: 'So dead'
+			  },
+			  {
+			  	id: 'b2',
+			  	text: 'super dead.'
+			  }]},
+	'b2': {parent: 'd',
+		  children:[
+			  {
+			  	id: 'd1',
+			  	text: 'I love'
+			  },
+			  {
+			  	id: 'd2',
+			  	text: 'what I love.'
+			  },
+			  {
+			  	id: 'd3',
+			  	text: 'Yes I do.'
+			  }
+			  ]}
 	};
 
 function makeNextNode(evt) {
@@ -117,27 +138,28 @@ function makeNextNode(evt) {
 	for (i=0; i < next_node_json.children.length; i++){
 		child_json = next_node_json.children[i];
 		console.log(child_json);
-		child_x_position = next_node_position.x-500*next_node_json.children.length+i*250;
+		child_x_position = next_node_position.x-500*next_node_json.children.length+i*100;
 		cy.add({
 			group: 'nodes',
 			data: {id: child_json.id, parent: next_node_json['parent'], text:child_json.text},
-			position: {x: child_x_position, y: next_node_position.y}
+			position: {x: child_x_position, y: next_node_position.y},
+			width: 'label'
 		});
 
 		child = cy.$('#'+child_json.id);
 		child.on('tap', makeNextNode);
-
 	};	
 
 
 	//Center on parent node
 	cy.animate({
 		center: {eles: cy.$('#'+next_node_id)},
-		fit: {eles: cy.$('#'+next_node_id)}
+		fit: {eles: cy.$('#'+next_node_id), padding: 100},
 	});
 };
 
 
 //Initialize all nodes for clicking
 cy.nodes().on('tap', makeNextNode);
+
 
