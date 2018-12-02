@@ -20,8 +20,9 @@ var cy = cytoscape({
         'text-halign': 'center',
         'width': 100,
         'height': 100,
-        'background-color': 'black',
-        'color': 'green'
+        'background-opacity': 0, 
+        'color': 'red',
+        'overlay-opacity':0 
       }
     },
 
@@ -51,7 +52,6 @@ var cy = cytoscape({
 
 //TO DO:
 
-//3. Fix node opacity
 //4. OPTIONAL: Add linkouts to other parts of project
 //5. OPTIONAL: Add support for connecting to already existing node. For now, tree only
 //6. OPTIONAL: Manually put in the positions for each node, or put all in at beginning, switch
